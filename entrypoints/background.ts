@@ -15,9 +15,6 @@ import {
 } from "firebase/firestore";
 import { AuthService } from "./services/auth";
 
-// background.ts order-details-for-ynab we need to read firebase_config from the url at browser.runtime.getURL("/firebase_config.json").  since that will require an async call, and since the method passed defineBackground must be synchronous, we have some refactoring to do.
-// TODO Let's instead read firebaseConfig from a JSON file that will be shipped as a static file as part of the extension, firebase_config.jsong
-
 // import { convertTimestamps, prepareForFirestore } from "./services/firestore";
 
 // Initialize Firebase
