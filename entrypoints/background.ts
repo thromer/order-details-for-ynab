@@ -22,6 +22,16 @@ let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 let auth: AuthService | null = null;
 
+/**
+ * Retrieves the Firebase app instance, initializing it if necessary.
+ *
+ * This function checks if the Firebase app has already been initialized; if so, it returns the existing instance.
+ * Otherwise, it fetches the configuration from the extension's runtime URL, initializes the app, and returns the new instance.
+ *
+ * @returns The initialized Firebase app instance.
+ *
+ * @throws {Error} If fetching the Firebase configuration fails.
+ */
 async function getApp(): Promise<FirebaseApp> {
     if (app) {
         return Promise.resolve(app);
@@ -35,6 +45,14 @@ async function getApp(): Promise<FirebaseApp> {
     return Promise.resolve(app);
 }
 
+/**
+ * Retrieves the Firestore database instance.
+ *
+ * If the Firestore instance has already been initialized, it is returned immediately.
+ * Otherwise, the Firebase app is initialized (if needed) to create and cache a new Firestore instance.
+ *
+ * @returns A promise that resolves with the Firestore database instance.
+ */
 async function getDb(): Promise<Firestore> {
     if (db) {
         return Promise.resolve(db);
@@ -43,6 +61,15 @@ async function getDb(): Promise<Firestore> {
     return Promise.resolve(db);
 }
 
+/**
+ * Retrieves the singleton authentication service instance.
+ *
+ * If an instance is already available, it is returned immediately. Otherwise,
+ * the function initializes the AuthService using the Firebase app (via {@link getApp})
+ * and caches it for future calls.
+ *
+ * @returns A promise that resolves to the AuthService instance.
+ */
 async function getAuthService(): Promise<AuthService> {
     if (auth) {
         return Promise.resolve(auth);
