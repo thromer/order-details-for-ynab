@@ -22,7 +22,7 @@ export interface YnabApiClient {
     getTransactions(
         budgetId: string,
         sinceDate?: string,
-        type?: string,
+        type?: GetTransactionsTypeEnum,
         lastKnowledgeOfServer?: number
     ): Promise<TransactionsResponse>;
 }
