@@ -22,17 +22,32 @@ let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 let auth: AuthService | null = null;
 
+// Keep track of the app initialization promise
+let appInitPromise: Promise<FirebaseApp> | null = null;
+
 async function getApp(): Promise<FirebaseApp> {
     if (app) {
         return Promise.resolve(app);
     }
-    const resp = await fetch(browser.runtime.getURL("/firebase_config.json"));
-    if (!resp.ok) {
-        throw new Error(`Failed to fetch Firebase config: ${resp.statusText}`);
+    if (appInitPromise) {
+        return appInitPromise;
     }
-    const firebaseConfig = await resp.json();
-    app = initializeApp(firebaseConfig);
-    return Promise.resolve(app);
+    appInitPromise = (async () => {
+        try {
+            const resp = await fetch(browser.runtime.getURL("/firebase_config.json"));
+            if (!resp.ok) {
+                  throw new Error(`Failed to fetch Firebase config: ${resp.statusText}`);
+            }
+            const firebaseConfig = await resp.json();
+            app = initializeApp(firebaseConfig);
+            return app;
+        } catch (error) {
+            // Clear the promise so we can retry
+            appInitPromise = null;
+            throw error;
+        }
+    })();
+    return appInitPromise;
 }
 
 async function getDb(): Promise<Firestore> {
