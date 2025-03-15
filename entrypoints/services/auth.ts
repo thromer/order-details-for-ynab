@@ -56,22 +56,12 @@ export class AuthService {
     }
 
     /**
-     * Sign out and revoke Chrome token
+     * Sign out from Google and Firebase.
+     * TODO is this the proper way to sign out?
      */
     async signOut(): Promise<void> {
-        // Get the current token
-        chrome.identity.getAuthToken({ interactive: false }, async (token) => {
-            if (token) {
-                // Revoke the token
-                // Question: do we gain anything by making the callback async and
-                // using await here?
-                await chrome.identity.removeCachedAuthToken({ token });
-                await chrome.identity.clearAllCachedAuthTokens();
-            }
-        });
-
-        // Sign out from Firebase
-        this.getAuth().signOut();
+        await chrome.identity.clearAllCachedAuthTokens();
+        await this.getAuth().signOut();
     }
 
     private getAuth(): Auth {
