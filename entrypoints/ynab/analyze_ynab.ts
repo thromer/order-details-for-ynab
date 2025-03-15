@@ -43,8 +43,8 @@ export class RealYnabApiClient implements YnabApiClient {
     ): Promise<TransactionsResponse> {
         return this.transactionsApi.getTransactions(
             budgetId,
-            type,
-            undefined,
+	    sinceDate,
+	    type,
             lastKnowledgeOfServer
         );
     }

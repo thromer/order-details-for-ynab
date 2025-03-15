@@ -41,15 +41,11 @@ export class AppStateService {
             const currentState = await this.getCurrent();
 
             const newState: AppState = {
-const newState: AppState = {
-    serverKnowledge:
-        state.serverKnowledge ?? currentState?.serverKnowledge ?? 0,
-    // Add other properties from the provided state or current state
-    ...(currentState || {}),
-    ...state,
-    // Ensure schemaVersion cannot be overridden by spread operators
-    schemaVersion: AppStateService.SCHEMA_VERSION,
-};
+                serverKnowledge:
+                state.serverKnowledge ?? currentState?.serverKnowledge ?? 0,
+                ...(currentState || {}),
+                ...state,
+                schemaVersion: AppStateService.SCHEMA_VERSION,
             };
 
             const dataToSave = prepareForFirestore(newState);
