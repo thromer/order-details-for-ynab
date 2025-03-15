@@ -86,9 +86,9 @@ export default defineBackground(() => {
                     doc(collection(await getDb(), "a"), "b")
                 );
                 if (d.exists()) {
-                    console.log("not found");
-                } else {
                     console.log(d.data());
+                } else {
+                    console.log("not found");
                 }
                 sendResponse({ success: true });
                 return true;

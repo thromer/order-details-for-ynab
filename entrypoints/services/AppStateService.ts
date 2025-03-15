@@ -26,7 +26,7 @@ export class AppStateService {
             return convertTimestamps<AppState>(stateDoc.data() as AppState);
         } catch (error) {
             console.error("Error getting app state:", error);
-            throw error;
+            throw new Error(`Failed to get app state: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
@@ -44,6 +44,11 @@ export class AppStateService {
                 schemaVersion: this.SCHEMA_VERSION,
                 serverKnowledge:
                     state.serverKnowledge ?? currentState?.serverKnowledge ?? 0,
+                // Add other properties from the provided state or current state
+                ...(currentState || {}),
+                ...state,
+                // Ensure schemaVersion cannot be overridden by spread operators
+                schemaVersion: this.SCHEMA_VERSION,
             };
 
             const dataToSave = prepareForFirestore(newState);
@@ -59,7 +64,7 @@ export class AppStateService {
             return newState;
         } catch (error) {
             console.error("Error saving app state:", error);
-            throw error;
+            throw new Error(`Failed to save app state: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 }
