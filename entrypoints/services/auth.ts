@@ -19,36 +19,11 @@ export class AuthService {
      * Sign in using chrome.identity and Firebase
      */
     async signInWithChromeIdentity(): Promise<User> {
-        return new Promise((resolve, reject) => {
-            // Request token from Chrome
-            chrome.identity.getAuthToken(
-                { interactive: true },
-                async (token) => {
-                    if (chrome.runtime.lastError) {
-                        return reject(chrome.runtime.lastError);
-                    }
-
-                    try {
-                        // Create credential from token
-                        const credential = GoogleAuthProvider.credential(
-                            null,
-                            token
-                        );
-
-                        // Sign in to Firebase with credential
-                        const userCredential = await signInWithCredential(
-                            this.getAuth(),
-                            credential
-                        );
-
-                        // Return the user
-                        resolve(userCredential.user);
-                    } catch (error) {
-                        reject(error);
-                    }
-                }
-            );
-        });
+        // TODO can we do this from the background script? Seems unlikely.
+        const authToken = await chrome.identity.getAuthToken({ interactive: true });
+        const credential = await GoogleAuthProvider.credential(null, authToken.token);
+        const userCredential = await signInWithCredential(this.getAuth(), credential);
+        return Promise.resolve(userCredential.user);
     }
 
     getUser(): User | null {
