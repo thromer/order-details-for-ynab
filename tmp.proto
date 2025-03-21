@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package example;
+
+// Naming conventions for fields:
+// - The prefix "app" indicates a field that comes from a budgeting or aggregation app such as YNAB or Tiller.
+// - The prefix "fi" indicates a field that comes from a financial institution (FI) such as a credit card company.
+// - The prefix "merch" indicates a field that comes from a merchant such as Costco.
+// - Fields with no prefix are our are own internal identifiers, or are unambiguous, e.g.:
+//   - applicationId
+//   - accountId  (should probably be "financialInstitutionAccountId but that's a mouthful)
+//   - merchantId
+//   - transactionId
+// In a given message the fields we set are listed first, followed by fields copied from the systems we integrate with.
+
+// TODO "orderId" you would think would be unambiguous.
+
+message AppState {  // "App" is just generic for YNAB
+  number schemaVersion;
+  number serverKnowledge;
+}
+
+// The initial state is UNKNOWN. The final states are NOT_NEEDED, SUCCEEDED, and FAILED.
+// UNKNOWN can transition to NOT_NEEDED or NEEDS_SYNC.
+// NEEDS_SYNC and NEEDS_RETRY can transition to SUCCEEDED, NEEDS_RETRY or FAILED.
+enum AppTransactionSyncState {
+  UNKNOWN;
+  NOT_NEEDED;
+  NEEDS_SYNC;
+  SUCCEEDED;
+  NEEDS_RETRY;
+  FAILED;
+}
+
+message AppTransaction {
+  number schemaVersion;
+  DocId applicationId;
+  DocId accountId;
+  DocId transactionId;  // our id for the transaction; foreign key into FiTransaction. Will be missing until a sync succeeds.
+  AppTransactionSyncState applicationSyncState;
+  // Eventually: some data about retry goes here.
+
+  DocId appAccountId;
+  DocId appTransactionId;
+  DocId appFiMerchTransactionId;  // the FI's record of the merchant's id
+  PlainDate appPostDate;
+  integer appAmountMills;
+}
+
+// Key is our transactionId
+message FiTransaction {
+    number schemaVersion;
+    DocId accountId;
+    DocId orderId;
+
+    DocId fiTransactionId;
+    PlainDate fiPostDate;
+    integer fiAmountMills;
+}
+
+message MerchOrder {
+    number schemaVersion;
+    DocId merchantId;
+    DocId orderId;
+    PlainDate merchOrderDate;
+    // line items, totals, transactions, ...
+}
+

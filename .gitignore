@@ -1,3 +1,9 @@
+# Firebase config, secrets
+firebase_config.json
+.firebaserc
+dev-private-key
+
+
 # Logs
 logs
 *.log
@@ -14,6 +20,8 @@ stats-*.json
 .wxt
 web-ext.config.ts
 
+.yarn
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -24,3 +32,4 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+*~
